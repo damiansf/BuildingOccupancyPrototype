@@ -1,0 +1,49 @@
+plugins {
+    id "checkstyle"
+    id "application"
+}
+apply plugin: "java"
+apply plugin: "jacoco"
+
+sourceCompatibility = 1.11
+targetCompatibility = 1.11
+
+jacoco {
+    toolVersion = "0.8.5"
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation("junit:junit:4.13")
+}
+
+checkstyle {
+    toolVersion = "8.26"
+}
+
+mainClassName = "buildingoccupationanalyzer.MainApplication"
+
+run{
+    standardInput = System.in
+}
+
+jar {
+   manifest {
+      attributes("Main-Class": "buildingoccupationanalyzer.MainApplication")
+   }
+   baseName "buildingOccupationAnalyzer"
+}
+
+task lint(dependsOn: [checkstyleMain, checkstyleTest])
+
+test {
+    useJUnit()
+    testLogging {
+        showStandardStreams = true
+    }
+}
+
+test.finalizedBy jacocoTestReport
